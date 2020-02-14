@@ -1,0 +1,9 @@
+{
+"name": "Dinse",
+"book_list": [
+"Livro do Dinse C ara",
+"Outro livro kakakka",
+"Mano mais um livro",
+"Ultimo livro"
+]
+}

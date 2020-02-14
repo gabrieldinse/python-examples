@@ -1,0 +1,17 @@
+1. Start the CartPole environment:
+   # python3 cartPoleWeb.py 
+
+2. Run the examples:
+   2.1 Python example:
+       # python3 exampleWeb.py 
+
+   2.2 Java example 
+       - Download the required JSON package from http://central.maven.org/maven2/org/json/json/20180813/json-20180813.jar
+       - Set the classpath:
+         # export CLASSPATH=json-20180813.jar:.  
+       - Compile the java example:
+         # javac exampleWeb.java       
+       - Run the example:
+         $ java exampleWeb
+
+3. Implement your own examples in any language with http requests support

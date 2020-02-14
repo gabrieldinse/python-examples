@@ -1,0 +1,22 @@
+<html>
+	<body>
+<h1>This is the title of the front page</h1>
+<a href="link1.html">First Link</a>
+<a href="link2.html">Second Link</a>
+<p>My name is Dinse.
+This is the content of my front page. It goes below the menu.</p>
+<table>
+<tr><th>Favourite Books</th></tr>
+
+<tr><td>Livro do Dinse C ara</td></tr>
+
+<tr><td>Outro livro kakakka</td></tr>
+
+<tr><td>Mano mais um livro</td></tr>
+
+<tr><td>Ultimo livro</td></tr>
+
+</table>
+	</body>
+</html>
+Copyright &copy; Today

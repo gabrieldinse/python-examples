@@ -1,0 +1,7 @@
+blablabbla WARNING mensagem kkkk
+blablabla INFO mano que isso
+balblalbal ERROR queeeee
+blablabla WARNING mano arruma isso
+testeeeee INFO mensagem
+blablabla INFO outra mensagem
+dkdkddkw WARNING teste som
