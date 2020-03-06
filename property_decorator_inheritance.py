@@ -16,25 +16,15 @@ class A:
 
     @property
     def var(self):
-        print('kkk2')
         return self._var
 
     @var.setter
     def var(self, value):
-        print('kkk3')
         self._var = value
 
 
 class B(A):
-    @property
-    def var(self):
-        print('que')
-        return super().var
-
-    @var.setter
-    def var(self, value):
-        super(B, type(self)).var.fset(self, value)
-        print('teste')
+    pass
 
 def main():
     b = B()
