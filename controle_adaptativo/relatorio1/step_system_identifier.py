@@ -12,7 +12,7 @@ def identify(output, input_amplitude, sampling_rate, method):
     """
     :param output: output array
     :param input_amplitude: the input step final value, scalar
-    :param sampling_rate: sampling rate (period)
+    :param sampling_rate: sampling rate (frequency)
     :param method: identify method string: "sundaresan", "nishikawa" or "smith"
     :return: tuple (gain, time constant, delay)
     """
@@ -36,10 +36,10 @@ def _sundaresan(output, input_amplitude, sampling_rate):
         if flag1 and flag2:
             break
         if output[k] >= 0.353 * input_amplitude and not flag1:
-            t1 = k * sampling_rate
+            t1 = k / sampling_rate
             flag1 = True
         if output[k] >= 0.853 * input_amplitude and not flag2:
-            t2 = k * sampling_rate
+            t2 = k / sampling_rate
             flag2 = True
 
     gain = (output[-1] - output[0]) / input_amplitude
@@ -52,17 +52,17 @@ def _nishikawa(output, input_amplitude, sampling_rate):
     area0 = 0.0
 
     for k, k_prev in zip(range(1, len(output), 1), range(len(output) - 1)):
-        area0 += sampling_rate * (output[k] - (output[k] + output[k_prev]) / 2)
+        area0 += (output[k] - (output[k] + output[k_prev]) / 2) / sampling_rate
 
     time_array = np.arange(
-        sampling_rate, len(output) * sampling_rate, len(output))
+        1 / sampling_rate, len(output) / sampling_rate, len(output))
     t0 = area0 / (output[-1] - output[0])
     k0 = np.digitize(t0, time_array)
 
     area1 = 0.0
 
     for k, k_prev in zip(range(1, int(k0), 1), range(int(k0) - 1)):
-        area1 += sampling_rate * (output[k] - output[k_prev]) / 2
+        area1 +=  (output[k] - output[k_prev]) / (2 * sampling_rate)
 
     gain = (output[-1] - output[0]) / input_amplitude
     time_constant = area1 / (0.368 * (output[-1] - output[0]))
@@ -81,11 +81,11 @@ def _smith(output, input_amplitude, sampling_rate):
             break
 
         if output[k] >= 0.283 * input_amplitude and not flag1:
-            t1 = k * sampling_rate
+            t1 = k / sampling_rate
             flag1 = True
 
         if output[k] >= 0.632 * input_amplitude and not flag2:
-            t2 = k * sampling_rate
+            t2 = k / sampling_rate
             flag2 = True
 
     time_constant = 1.5 * (t2 - t1)
