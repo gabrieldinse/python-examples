@@ -9,6 +9,13 @@ import numpy as np
 
 
 def identify(output, input_amplitude, sampling_rate, method):
+    """
+    :param output: output array
+    :param input_amplitude: the input step final value, scalar
+    :param sampling_rate: sampling rate (period)
+    :param method: identify method string: "sundaresan", "nishikawa" or "smith"
+    :return: tuple (gain, time constant, delay)
+    """
     if method == 'sundaresan':
         return _sundaresan(output, input_amplitude, sampling_rate)
     elif method == 'nishikawa':
@@ -44,17 +51,17 @@ def _sundaresan(output, input_amplitude, sampling_rate):
 def _nishikawa(output, input_amplitude, sampling_rate):
     area0 = 0.0
 
-    for k, k_prev in range(1, len(output), 1), range(len(output) - 1):
+    for k, k_prev in zip(range(1, len(output), 1), range(len(output) - 1)):
         area0 += sampling_rate * (output[k] - (output[k] + output[k_prev]) / 2)
 
     time_array = np.arange(
         sampling_rate, len(output) * sampling_rate, len(output))
     t0 = area0 / (output[-1] - output[0])
-    k0 = np.digitize(t0, time_array, dtype=int)
+    k0 = np.digitize(t0, time_array)
 
     area1 = 0.0
 
-    for k, k_prev in range(1, int(k0), 1), range(int(k0) - 1):
+    for k, k_prev in zip(range(1, int(k0), 1), range(int(k0) - 1)):
         area1 += sampling_rate * (output[k] - output[k_prev]) / 2
 
     gain = (output[-1] - output[0]) / input_amplitude
@@ -85,4 +92,3 @@ def _smith(output, input_amplitude, sampling_rate):
     delay = t2 - time_constant
     gain = (output[-1] - output[0]) / input_amplitude
     return gain, time_constant, delay
-
