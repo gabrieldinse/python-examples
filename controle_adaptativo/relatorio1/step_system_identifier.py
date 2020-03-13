@@ -48,5 +48,25 @@ def _nishikawa(output, input_amplitude, sampling_rate):
 
 
 def _smith(output, input_amplitude, sampling_rate):
-    pass
+    flag1 = False
+    flag2 = False
+    t1 = 0.0
+    t2 = 0.0
+
+    for k in range(len(output)):
+        if flag1 and flag2:
+            break
+
+        if output[k] >= 0.283 * input_amplitude and not flag1:
+            t1 = k * sampling_rate
+            flag1 = True
+
+        if output[k] >= 0.632 * input_amplitude and not flag2:
+            t2 = k * sampling_rate
+            flag2 = True
+
+    time_constant = 1.5 * (t2 - t1)
+    delay = t2 - time_constant
+    gain = (output[-1] - output[0]) / input_amplitude
+    return gain, time_constant, delay
 
