@@ -50,11 +50,11 @@ def _nishikawa(output, input_amplitude, sampling_rate):
     time_array = np.arange(
         sampling_rate, len(output) * sampling_rate, len(output))
     t0 = area0 / (output[-1] - output[0])
-    k0 = np.digitize(t0, time_array)
+    k0 = np.digitize(t0, time_array, dtype=int)
 
     area1 = 0.0
 
-    for k, k_prev in range(1, k0, 1), range(k0 - 1):
+    for k, k_prev in range(1, int(k0), 1), range(int(k0) - 1):
         area1 += sampling_rate * (output[k] - output[k_prev]) / 2
 
     gain = (output[-1] - output[0]) / input_amplitude
