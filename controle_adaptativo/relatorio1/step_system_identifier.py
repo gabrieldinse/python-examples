@@ -23,7 +23,8 @@ def identify(output, input_amplitude, sampling_rate, method):
     elif method == 'smith':
         return _smith(output, input_amplitude, sampling_rate)
     else:
-        return None, None, None
+        raise ValueError('Wrong method parameter value.\n"'
+                         'Must be: "sundaresan", "nishikawa" or "smith" ')
     
 
 def _sundaresan(output, input_amplitude, sampling_rate):
@@ -41,9 +42,12 @@ def _sundaresan(output, input_amplitude, sampling_rate):
         if output[k] >= 0.853 * output[-1] and not flag2:
             t2 = k / sampling_rate
             flag2 = True
+
     gain = (output[-1] - output[0]) / input_amplitude
     time_constant = 0.67 * (t2 - t1)
     delay = 1.3 * t1 - 0.29 * t2
+    if delay < 0.0:
+        delay = 0.0
     return gain, time_constant, delay
 
 
@@ -65,6 +69,8 @@ def _nishikawa(output, input_amplitude, sampling_rate):
     gain = (output[-1] - output[0]) / input_amplitude
     time_constant = area1 / (0.368 * (output[-1] - output[0]))
     delay = t0 - time_constant
+    if delay < 0.0:
+        delay = 0.0
     return gain, time_constant, delay
 
 
@@ -87,6 +93,8 @@ def _smith(output, input_amplitude, sampling_rate):
             flag2 = True
 
     time_constant = 1.5 * (t2 - t1)
-    delay = t2 - time_constant
     gain = (output[-1] - output[0]) / input_amplitude
+    delay = t2 - time_constant
+    if delay < 0.0:
+        delay = 0.0
     return gain, time_constant, delay
