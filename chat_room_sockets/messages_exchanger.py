@@ -16,10 +16,11 @@ class MessagesExchanger:
     def __init__(self, sock):
         self.socket = sock
     
-    def _recv_n_bytes(self, number_of_bytes):
+    def _recv_n_bytes(self, number_of_bytes, max_size=1024):
         data = b""
-        while len(data) < number_of_bytes:
-            packet = self.socket.recv(number_of_bytes - len(data))
+        while (remaining := number_of_bytes - len(data)) > 0:
+            packet_size = remaining if remaining < max_size else max_size
+            packet = self.socket.recv(packet_size)
             if not packet:
                 return None
             data += packet
