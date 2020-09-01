@@ -115,7 +115,7 @@ class ClientToServerConnection:
             if self.recv_code == 109:  # Public or private msg
                 self.show_msg()
 
-            elif self.recv_code == 110:  # Keep alive?
+            elif self.recv_code == 110:  # Keep alive
                 self.respond_user_connection_check()
 
             else:  # Client requested action

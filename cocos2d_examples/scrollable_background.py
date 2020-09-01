@@ -14,6 +14,7 @@ from pyglet.window import key
 
 # Local application imports
 
+
 # Global variables
 keyboard = key.KeyStateHandler()
 scroller = cocos.layer.ScrollingManager()

@@ -10,7 +10,6 @@ import os
 # Third party modules
 import control as ctl
 import matplotlib.pyplot as plt
-import matplotlib.lines as mlines
 import matplotlib as mplt
 import numpy as np
 
@@ -30,7 +29,7 @@ def adjust_axis_pos(axes, offset):
 plt.close('all')
 
 folder = os.path.dirname(os.path.abspath(__file__))
-methods = ["nishikawa", "sundaresan", "smith"]
+methods = ['nishikawa', 'sundaresan', 'smith']
 
 for filename in os.listdir(folder):
     if filename.endswith('.dat'):
@@ -42,9 +41,9 @@ for filename in os.listdir(folder):
         y = data['step_response']
 
         for method in methods:
-            K, tau, L = identify(y, A, fs, method)
+            k, tau, L = identify(y, A, fs, method)
 
-            num = np.array([K])
+            num = np.array([k])
             den = np.array([tau, 1])
             G_est = ctl.tf(num, den)
             t = np.arange(0, len(y) / fs, 1 / fs)
@@ -63,16 +62,15 @@ for filename in os.listdir(folder):
             adjust_axis_pos(ax1, [-0.02, 0.02, 0.05, -0.02])
 
             plt.step(t, y, where='post')
-            plt.title(
-                'Método ' + method.capitalize() + ' para o arquivo\n "' +
+            plt.title('Método ' + method.capitalize() + ' para o arquivo\n "' +
                 filename + '"')
             plt.xlabel('Tempo (s)')
             plt.ylabel('Tensão (V)')
             plt.xlim(left=t[0], right=t[-1])
             plt.grid()
-            plt.plot(t, y, color='blue', label='Saída real')
-            plt.plot(
-                t, y_est, color='red', label='Simulação da planta estimada')
+            plt.plot(t, y, color='blue', label='Resposta ao degrau: planta real')
+            plt.plot(t, y_est, color='red',
+                     label='Resposta ao degrau: planta estimada')
             plt.legend(loc='lower right')
             plt.savefig(method + '_' + os.path.splitext(filename)[0] + '.svg')
 

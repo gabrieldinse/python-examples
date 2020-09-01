@@ -13,17 +13,18 @@ import struct
 
 
 class MessagesExchanger:
-    def __init__(self, sock):
+    def __init__(self, sock, header_format='I'):
         self.socket = sock
-    
-    def _recv_n_bytes(self, number_of_bytes, max_size=1024):
-        data = b""
+        self.packer = struct.Struct(header_format)
+
+    def _recv_n_bytes(self, number_of_bytes, max_size=4096):
+        data = bytearray()
         while (remaining := number_of_bytes - len(data)) > 0:
             packet_size = remaining if remaining < max_size else max_size
             packet = self.socket.recv(packet_size)
             if not packet:
                 return None
-            data += packet
+            data.extend(packet)
         return data
 
     def recv_message(self):
@@ -32,11 +33,11 @@ class MessagesExchanger:
         if not header:
             return None
 
-        message_len = struct.unpack(">I", header)[0]
+        message_len = self.packer.unpack(header)[0]
         return self._recv_n_bytes(message_len)
 
     def send_message(self, message):
-        self.socket.sendall(struct.pack(">I", len(message)) + message)
+        self.socket.sendall(self.packer.pack(">I", len(message)) + message)
 
 
 def main():
