@@ -16,7 +16,7 @@ import re
 
 
 # Local application imports
-from msg_trader import MessagesExchanger
+from messages_exchanger import MessagesExchanger
 
 
 class ServerToClientConnection:
@@ -28,7 +28,7 @@ class ServerToClientConnection:
         self.clients = clients
         self.clients_list_lock = clients_list_lock
         self.nickname_match = re.compile(nickname_regex)
-        self.msg_trader = MessagesExchanger(sock)
+        self.messages_exchanger = MessagesExchanger(sock)
         self.nickname = "##NOT_CONNECTED##"
         self.msgs_to_send = queue.Queue()
         self.sent_codes = queue.Queue()
@@ -45,17 +45,17 @@ class ServerToClientConnection:
             read_socket, _, _ = select.select([self.socket], [], [], timeout)
             if read_socket:
                 try:
-                    self.read_msg()
+                    self.read_message()
                 except OSError as e:
                     print(f"Error reading socket from {self.nickname} "
                           f"{self.socket.getsockname()}")
                     break
                 self.check_codes()
-            self.send_msgs()
+            self.send_messages()
             self.check_user_connection()
         self.close_connection()
 
-    def send_msgs(self):
+    def send_messages(self):
         while True:
             try:
                 code, data = self.msgs_to_send.get_nowait()
@@ -64,12 +64,12 @@ class ServerToClientConnection:
 
             if code not in self.final_response_codes:
                 self.sent_codes.put(code)
-            self.msg_trader.send_msg(data)
+            self.messages_exchanger.send_message(data)
             print(f"Code {code} sent to {self.nickname} "
                   f"{self.socket.getsockname()}")
 
-    def read_msg(self):
-        msg = self.msg_trader.recv_msg()
+    def read_message(self):
+        msg = self.messages_exchanger.receive_message()
 
         if msg is not None:
             self.recv_code, self.msg_content = msg[0], msg[1:]
@@ -230,7 +230,7 @@ def main():
     # Reuse address when reconnect
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((ip, port))
-    server = Server(server_socket, "^[^0-9][^@#]{1, 32}$")
+    server = Server(server_socket, "[A-Za-z0-9]")  #"^[^0-9][^@#]{1, 32}$")
     server.connection_interface()
 
 

@@ -58,7 +58,9 @@ def main():
                 VALUES 
                     ({last_harvest_id}, {last_orange_id})
             ''')
+
         time.sleep(0.5)
+
     mariadb_connection.commit()
     mariadb_connection.close()
 

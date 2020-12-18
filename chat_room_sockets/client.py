@@ -13,7 +13,7 @@ import socket
 # Third party modules
 
 # Local application imports
-from msg_trader import MessagesExchanger
+from messages_exchanger import MessagesExchanger
 
 
 class ClientToServerConnection:
@@ -21,7 +21,7 @@ class ClientToServerConnection:
 
     def __init__(self, sock: socket.socket, timeout):
         self.socket = sock
-        self.msg_trader = MessagesExchanger(sock)
+        self.messages_exchanger = MessagesExchanger(sock)
         self.online = threading.Event()
         self.sent_codes = queue.Queue()
         self.msgs_to_send = queue.Queue()
@@ -83,21 +83,21 @@ class ClientToServerConnection:
             read_socket, _, _ = select.select([self.socket], [], [], timeout)
             if read_socket:
                 try:
-                    self.read_msg()
+                    self.read_message()
                 except OSError:
                     raise
                 self.check_codes()
-            self.send_msgs()
+            self.send_messages()
         self.close_connection(0)
 
-    def read_msg(self):
-        msg = self.msg_trader.recv_msg()
+    def read_message(self):
+        msg = self.messages_exchanger.receive_message()
 
         if msg is not None:
             self.recv_code, self.msg_content = msg[0], msg[1:]
             self.new_msg = True
 
-    def send_msgs(self):
+    def send_messages(self):
         while True:
             try:
                 code, data = self.msgs_to_send.get_nowait()
@@ -106,7 +106,7 @@ class ClientToServerConnection:
 
             if code not in self.final_response_codes:
                 self.sent_codes.put(code)
-            self.msg_trader.send_msg(data)
+            self.messages_exchanger.send_message(data)
 
     def check_codes(self):
         if self.new_msg:
