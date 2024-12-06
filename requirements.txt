@@ -24,7 +24,7 @@ requests==2.25.1
 scipy==1.4.1
 six==1.14.0
 sympy==1.6.2
-urllib3==1.26.2
+urllib3==1.26.5
 Werkzeug==1.0.1
 zope.event==4.5.0
 zope.interface==5.2.0
